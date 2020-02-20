@@ -1,6 +1,6 @@
 [package]
 name = "run-loop"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Wayne <wayne@viichi.com>"]
 categories = ["data-structures"]
 description = "Run loop for thread, provide message post, deadline timer and future executor"
