@@ -1,9 +1,10 @@
 [package]
 name = "run-loop"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Wayne <wayne@viichi.com>"]
 categories = ["data-structures"]
 description = "Run loop for thread, provide message post, deadline timer and future executor"
+documentation = "https://docs.rs/run-loop"
 license = "MIT/Apache-2.0 AND BSD-2-Clause"
 keywords = ["message", "future", "coroutine"]
 repository = "https://github.com/viichi/run-loop-rs"

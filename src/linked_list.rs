@@ -161,6 +161,15 @@ impl<T: ?Sized> List<T> {
         }
     }
 
+    pub unsafe fn for_each<F: FnMut(NodePtr<T>)>(&self, mut f: F) {
+        let mut node = self.head;
+        while !node.is_null() {
+            let t = NonNull::new_unchecked(node);
+            node = (*node).next();
+            f(t);
+        }
+    }
+
     pub unsafe fn clear<F: FnMut(NodePtr<T>)>(&mut self, mut f: F) {
         let mut node = self.head;
         if !node.is_null() {

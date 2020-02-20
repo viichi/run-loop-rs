@@ -209,14 +209,15 @@ impl RunLoop {
 impl Drop for RunLoop {
     fn drop(&mut self) {
         unsafe {
-            (*self.pending_tasks.get()).clear(|node| {
-                node.as_ref().run_loop_drop();
+            (*self.waken_tasks.get()).for_each(|node| node.as_ref().run_loop_drop());
+            (*self.pending_tasks.get()).for_each(|node| node.as_ref().run_loop_drop());
+
+            (*self.waken_tasks.get()).clear(|node| {
                 Arc::from_raw(node.as_ptr());
             });
-            (*self.waken_tasks.get()).clear(|node| {
-                node.as_ref().run_loop_drop();
+            (*self.pending_tasks.get()).clear(|node| {
                 Arc::from_raw(node.as_ptr());
-            })
+            });
         }
     }
 }
