@@ -1,0 +1,17 @@
+[package]
+name = "run-loop"
+version = "0.1.0"
+authors = ["Wayne <wayne@viichi.com>"]
+categories = ["data-structures"]
+description = "Run loop for thread, provide message post, deadline timer and future executor"
+license = "MIT/Apache-2.0 AND BSD-2-Clause"
+keywords = ["message", "future", "coroutine"]
+repository = "https://github.com/viichi/run-loop-rs"
+#homepage = "https://github.com/viichi/run-loop-rs"
+readme = "README.md"
+
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
