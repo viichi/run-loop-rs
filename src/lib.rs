@@ -7,7 +7,9 @@
 pub mod linked_list;
 pub mod binary_heap;
 
-pub mod run_loop;
+mod run_loop;
+
+pub use run_loop::*;
 
 #[cfg(test)]
 mod tests {
