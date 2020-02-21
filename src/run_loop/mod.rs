@@ -25,7 +25,7 @@ pub fn post_quit() {
         }
     })
 }
-pub fn post<F: FnOnce() + Send + 'static>(msg: F) {
+pub fn post<F: FnOnce() + 'static>(msg: F) {
     RUN_LOOP.with(|t| { t.tx.send(Msg::Func(Box::new(msg))).unwrap() })
 }
 pub fn spawn_task<'a, T: Future + 'a, F: FnOnce() -> T>(task: F) -> task::Task<'a, T::Output> { task::Task::new(task()) }
@@ -45,15 +45,15 @@ impl Handle {
         }
     }
     pub fn is_local(&self) -> bool { thread::current().id() == self.thread_id }
-    pub fn post<F: FnOnce() + Send + 'static>(&self, msg: F) -> Result<(), mpsc::SendError<Box<dyn FnOnce() + Send + 'static>>> {
+    pub fn post<F: FnOnce() + Send + 'static>(&self, msg: F) -> Result<(), mpsc::SendError<()>> {
         self.tx.send(Msg::Func(Box::new(msg)))
             .map_err(|e| match e.0 {
-                Msg::Func(t) => mpsc::SendError(t),
+                Msg::Func(_) => mpsc::SendError(()),
                 _ => unreachable!(),
             })
     }
-    pub fn post_quit(&self) -> Result<(), ()> {
-        self.post(|| post_quit()).map_err(|_| ())
+    pub fn post_quit(&self) -> Result<(), mpsc::SendError<()>> {
+        self.post(|| post_quit())
     }
 }
 
@@ -65,8 +65,10 @@ impl Default for Handle {
 
 enum Msg {
     Quit,
-    Func(Box<dyn FnOnce() + Send + 'static>),
+    Func(Box<dyn FnOnce() + 'static>),
 }
+
+unsafe impl Send for Msg {}
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum Status {
