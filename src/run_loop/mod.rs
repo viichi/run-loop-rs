@@ -194,7 +194,7 @@ impl RunLoop {
                 }
                 processed = true;
                 let node = Arc::from_raw(node);
-                if node.exec(&node).is_pending() {
+                if node.exec().is_pending() {
                     let list = self.pending_tasks.get();
                     *node.list_mut() = list;
                     (*list).push_back(Arc::into_raw_non_null(node));
@@ -211,8 +211,8 @@ impl RunLoop {
 impl Drop for RunLoop {
     fn drop(&mut self) {
         unsafe {
-            (*self.waken_tasks.get()).for_each(|node| node.as_ref().run_loop_drop());
-            (*self.pending_tasks.get()).for_each(|node| node.as_ref().run_loop_drop());
+            (*self.waken_tasks.get()).for_each(|node| *node.as_ref().list_mut() = 0 as *mut _);
+            (*self.pending_tasks.get()).for_each(|node| *node.as_ref().list_mut() = 0 as *mut _);
 
             (*self.waken_tasks.get()).clear(|node| {
                 Arc::from_raw(node.as_ptr());
